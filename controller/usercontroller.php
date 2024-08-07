@@ -1,13 +1,14 @@
 <?php
 session_start();
 //Get php scripts
-require_once 'model/loginmodel.php';
-require_once 'config.php';
-require_once 'model/usermodel.php';
+require 'model/loginmodel.php';
+require 'config.php';
 
 class usercontroller
 {
 
+    private $connectionSettings;
+    private $userobj;
     function __construct()
     {
         $this->connectionSettings = new Config();
@@ -54,9 +55,9 @@ class usercontroller
             $_SESSION["Surname"] = $user->Surname;
             $_SESSION["Email"] = $user->Email;
             $_SESSION["Role"] = $user->Role;
-            include 'view/main.php';
+            // include 'view/main.php';
+            $this->redirect("view/main.php"); //Change URL which is shown after login
         } else {
-            //TODO: Implement Login Error
             //Login not successful
             include 'view/loginError.php';
         }

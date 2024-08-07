@@ -1,3 +1,10 @@
+<?php
+session_start();
+$_userid = $_SESSION["UserID"];
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,9 +29,8 @@
             <div class="d-flex justify-content-between align-items-center">
 
                 <div class="d-flex justify-content-center flex-grow-1">
-                    <a href="../index.php" id="companyNameTitle">
-                        <h1>AES</h1>
-                    </a>
+                    <h1>AES</h1> <br>
+                    <?php echo "User id: " . $_userid ?>
                 </div>
                 <div>
                     <!-- Logout Button -->
@@ -43,10 +49,10 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="nav nav-pills nav-fill flex-grow-1 justify-content-between text-center">
                         <li class="nav-item">
-                            <h5><a class="nav-link" href="konto.php">ERFASSEN</a></h5>
+                            <h5><a class="nav-link active" id="activatedNavbarItem" href="konto.php">ERFASSEN</a></h5>
                         </li>
                         <li class="nav-item">
-                            <h5><a class="nav-link active" id="activatedNavbarItem" href="view/main.php">AUSWERTEN</a></h5>
+                            <h5><a class="nav-link " href="view/main.php">AUSWERTEN</a></h5>
                         </li>
                         <li class="nav-item">
                             <h5><a class="nav-link" href="kontakt.php">Platzhalter</a></h5>
@@ -59,12 +65,13 @@
 
     <div class="container">
         <div id="inputForm">
-            <form v-on:submit.prevent="addItem">
+            <!-- Expense Input Form -->
+            <form v-on:submit.prevent="addExpense">
                 <h1>Ausgaben</h1>
                 <label for="" class="form-label">Wert (€)</label>
                 <input type="text" required class="form-control" v-model="inputValue">
                 <label for="" class="form-label">Kategorie</label>
-                <select name="" id="" class="form-select" v-model="inputCategory">
+                <select name="" id="" required class="form-select" v-model="inputCategory">
                     <option value="Auto">Auto</option>
                     <option value="Tanken">Tanken</option>
                     <option value="Essensbestellungen">Essensbestellungen</option>
@@ -75,28 +82,67 @@
                     <option value="Fitness">Fitness</option>
                     <option value="Handy">Handy</option>
                 </select>
+                <label for="" class="form-label">Beschreibung</label>
+                <textarea name="" id="" class="form-control" v-model="inputDescription"></textarea>
                 <label for="" class="form-label">Datum</label>
                 <input type="date" class="form-control" v-model="inputDate" v-on:focus="openDatepicker">
                 <button type="submit" class="my-3">Hinzufügen</button>
             </form>
+            <!-- Expense Input Form -->
 
+            <h3>Gesamtsumme nach Kategorie</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Kategorie</th>
+                        <th>Summe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(totalExpense, index) in totalValueByCategory" :key="index">
+                        <td>{{totalExpense.Kategorie}}</td>
+                        <td>{{totalExpense.Summe}}</td>
+                    </tr>
+                </tbody>
+            </table>
             <h4>Liste der Ausgaben</h4>
             <br>
-            <ul>
-                <li v-for="(item, index) in ausgabenListe" :key="index" style="list-style-type: none">
+            <table class="table">
+                <thead>
+                    <th>Wert</th>
+                    <th>Kategorie</th>
+                    <th>Datum</th>
+                    <th>Beschreibung</th>
+                    <th>#</th>
+                </thead>
+                <tbody>
+                    <tr v-for="(expense, index) in expenseList" :key="index">
+                        <td>{{ formatValue(expense.Value)}}</td>
+                        <td>{{expense.Category}}</td>
+                        <td>{{expense.CreateDate}}</td>
+                        <td>{{expense.Description}}</td>
+                        <td>{{expense.UserID}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- <ul>
+                <li v-for="(item, index) in expenseList" :key="index" style="list-style-type: none">
                     <div class="card">
                         <div class="card-body">
-                            <p>{{item.Wert}} €</p>
-                            <p>{{item.Kategorie}}</p>
-                            <p>{{item.Datum}}</p>
-                            <button v-on:click="showDeleteModal(index)">Löschen</button>
+                            <p><b>Wert: </b>{{ formatValue(item.Value)}} €</p>
+                            <p><b>Kategorie: </b>{{item.Category}}</p>
+                            <p><b>Datum: </b>{{item.CreateDate}}</p>
+                            <p><b>Beschreibung: </b>{{item.Description}}</p>
+                            <p><b>Id: </b>{{item.UserID}}</p>
                             <button v-on:click="showEditModal(index)">Bearbeiten</button>
+                            <button v-on:click="showDeleteModal(index)">Löschen</button>
                         </div>
                     </div>
                 </li>
-            </ul>
+            </ul> -->
 
-            <!-- Modal to delete expanse -->
+
+            <!-- Modal to delete expense -->
             <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -105,9 +151,9 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <p>Wert: {{ currentItem ? currentItem.Wert : '' }}</p>
-                            <p>Kategorie: {{ currentItem ? currentItem.Kategorie : '' }}</p>
-                            <p>Datum: {{ currentItem ? currentItem.Datum : '' }}</p>
+                            <p><b>Wert: </b> {{ currentItem ? currentItem.Wert : '' }}</p>
+                            <p><b>Kategorie: </b> {{ currentItem ? currentItem.Kategorie : '' }}</p>
+                            <p><b>Datum: </b> {{ currentItem ? currentItem.Datum : '' }}</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
@@ -116,8 +162,9 @@
                     </div>
                 </div>
             </div>
+            <!-- Modal to delete expense -->
 
-            <!-- Modal to edit expanse -->
+            <!-- Modal to edit expense -->
             <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -150,15 +197,16 @@
                     </div>
                 </div>
             </div>
+            <!-- Modal to edit expense -->
         </div>
     </div>
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
     <!-- <script src="handleInputForm.js" type="module"></script> -->
-    <script src="..\public\javascript\inputFormAddExpanse.js" type="module"></script>
-    <!-- <script src="inputFormDeleteExpanse.js" type="module"></script>
-    <script src="inputFormEditExpanse.js" type="module"></script> -->
+    <script src="..\public\javascript\inputFormAddExpense.js" type="module"></script>
+    <!-- <script src="inputFormDeleteExpense.js" type="module"></script>
+    <script src="inputFormEditExpense.js" type="module"></script> -->
 
 
     <!-- Bootstrap JS Bundle (includes Popper) -->

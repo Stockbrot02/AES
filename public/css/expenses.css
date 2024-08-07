@@ -1,0 +1,5 @@
+#inputForm input,
+#inputForm select,
+#inputForm textarea {
+    border: 1px solid black;
+}

@@ -60,6 +60,9 @@ header a:hover{
     border-color: transparent;
 }
 
+#txtAreaInputDescription{
+    border: 5px solid black !important;
+}
 
 /* Arrange navbar in burger menu */
 @media (max-width: 991px) {

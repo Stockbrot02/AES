@@ -8,7 +8,7 @@
 
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="..\public\css\style.css">
+    <link rel="stylesheet" href="../public/css/style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 
@@ -22,16 +22,13 @@
             <div class="d-flex justify-content-between align-items-center">
 
                 <div class="d-flex justify-content-center flex-grow-1">
-                    <a href="../index.php" id="companyNameTitle">
                         <h1>AES</h1>
-                    </a>
+                   
                 </div>
                 <div>
                     <!-- Logout Button -->
                     <form action="../index.php?operation=logout" method="post" class="d-inline">
-                        <button class="btn btn-danger logout-btn">
-                            <i class="material-icons" id="logoutIcon">logout</i>Abmelden
-                        </button>
+                        <button class="btn btn-danger logout-btn"><i class="material-icons" id="logoutIcon">logout</i>Abmelden</button>
                     </form>
                 </div>
             </div>
@@ -45,10 +42,10 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="nav nav-pills nav-fill flex-grow-1 justify-content-between text-center">
                         <li class="nav-item">
-                            <h5><a class="nav-link" href="konto.php">ERFASSEN</a></h5>
+                            <h5><a class="nav-link active" id="activatedNavbarItem" href="konto.php">ERFASSEN</a></h5>
                         </li>
                         <li class="nav-item">
-                            <h5><a class="nav-link active" id="activatedNavbarItem" href="solarmodule.php">AUSWERTEN</a></h5>
+                            <h5><a class="nav-link "  href="view/main.php">AUSWERTEN</a></h5>
                         </li>
                         <li class="nav-item">
                             <h5><a class="nav-link" href="kontakt.php">Platzhalter</a></h5>
@@ -66,7 +63,7 @@
                 <label for="" class="form-label">Wert (€)</label>
                 <input type="text" required class="form-control" v-model="inputValue">
                 <label for="" class="form-label">Kategorie</label>
-                <select name="" id="" class="form-select" v-model="inputCategory">
+                <select name="" id="" required class="form-select" v-model="inputCategory">
                     <option value="Auto">Auto</option>
                     <option value="Tanken">Tanken</option>
                     <option value="Essensbestellungen">Essensbestellungen</option>
@@ -88,9 +85,9 @@
                 <li v-for="(item, index) in ausgabenListe" :key="index" style="list-style-type: none">
                     <div class="card">
                         <div class="card-body">
-                            <p>{{item.Wert}} €</p>
-                            <p>{{item.Kategorie}}</p>
-                            <p>{{item.Datum}}</p>
+                            <p><b>Wert: </b>{{item.Wert}} €</p>
+                            <p><b>Kategorie: </b>{{item.Kategorie}}</p>
+                            <p><b>Datum: </b>{{item.Datum}}</p>
                             <button v-on:click="showDeleteModal(index)">Löschen</button>
                             <button v-on:click="showEditModal(index)">Bearbeiten</button>
                         </div>
@@ -107,9 +104,9 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <p>Wert: {{ currentItem ? currentItem.Wert : '' }}</p>
-                            <p>Kategorie: {{ currentItem ? currentItem.Kategorie : '' }}</p>
-                            <p>Datum: {{ currentItem ? currentItem.Datum : '' }}</p>
+                            <p><b>Wert: </b> {{ currentItem ? currentItem.Wert : '' }}</p>
+                            <p><b>Kategorie: </b> {{ currentItem ? currentItem.Kategorie : '' }}</p>
+                            <p><b>Datum: </b> {{ currentItem ? currentItem.Datum : '' }}</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
