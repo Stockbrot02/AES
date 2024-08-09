@@ -1,17 +1,15 @@
 <?php
-// Datenbankverbindung herstellen
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "expanses";
+require 'config.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$config = new config();
+
+$conn = new mysqli($config->getHost(), $config->getUsername(), $config->getPassword(), $config->getDatabase());
 
 if ($conn->connect_error) {
     die("Verbindung fehlgeschlagen: " . $conn->connect_error);
 }
 
-$sql = "SELECT Category AS Kategorie, SUM(Value) AS Summe FROM expanses GROUP BY Category ORDER BY Value DESC";
+$sql = "SELECT Category AS Kategorie, SUM(Value) AS Summe FROM expanses GROUP BY Category ORDER BY SUM(Value) DESC";
 $result = $conn->query($sql);
 
 $totalExpenses = array();
@@ -24,5 +22,7 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 
+// inform client that the content is in JSON format
 header('Content-Type: application/json');
+// converting array into JSON
 echo json_encode($totalExpenses);

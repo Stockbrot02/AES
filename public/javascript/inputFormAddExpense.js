@@ -10,12 +10,27 @@ const inputForm = Vue.createApp({
             inputDate: '',
             inputDescription: '',
             expenseList: [],
-            totalValueByCategory: []
+            totalValueByCategory: [],
+            expensePerPage: 10, // amount of expenses per Page
+            currentPage: 1,
+            windowWidth: window.innerWidth
             // currentIndex: null,
             // currentItem: null,
             // editValue: '',
             // editCategory: '',
             // editDate: ''
+        }
+    },
+    computed: {
+        // calculate amount of expenses per Page
+        paginatedExpenses() {
+            const start = (this.currentPage - 1) * this.expensePerPage;
+            const end = start + this.expensePerPage;
+            return this.expenseList.slice(start, end);
+        },
+        // calculate total number of sites
+        totalPages() {
+            return Math.ceil(this.expenseList.length / this.expensePerPage);
         }
     },
     methods: {
@@ -55,9 +70,9 @@ const inputForm = Vue.createApp({
                 body: data
             })
                 // .then(response => response.json())
-                .then(response =>{
+                .then(response => {
                     console.log("Raw response:", response);
-                    if (!response.ok){
+                    if (!response.ok) {
                         throw new Error("Network response was not ok " + response.statusText);
                     }
                     return response.json();
@@ -103,23 +118,66 @@ const inputForm = Vue.createApp({
                 .catch(error => console.error("Error fetching expenses:", error));
         },
         // Format value 'xx.xx' to -> 'xx,xx'
-        formatValue(value){
+        formatValue(value) {
             return value.replace(".", ",");
         },
         // load summarized expense values by category
-        fetchTotalExpensesByCategory(){
+        fetchTotalExpensesByCategory() {
             fetch('../load_totalExpenseByCategory.php')
                 .then(response => response.json())
-                .then(data =>{
+                .then(data => {
                     this.totalValueByCategory = data;
                 })
                 .catch(error => console.error("Error fetching total expense value by category: ", error));
+        },
+        goToPage(pageNumber) {
+            this.currentPage = pageNumber;
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+            }
+        },
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+        // truncate description on smaller screensize
+        truncateDescription(description, length) {
+            if (this.windowWidth <= 768) {
+                if (!description) {
+                    return "";
+                }
+                if (description.length > length) {
+                    return description.substring(0, length) + "...";
+                }
+                return description;
+            }
+            return description;
+
+        },
+        // show full description on click
+        showFullDescription(description) {
+            if (this.windowWidth <= 768) {
+                if (description !== "") {
+                    alert("Komplette Beschreibung:  \n\n" + description);
+                }
+            }
+        },
+        // update the window width on resize
+        updateWindowWidth() {
+            this.windowWidth = window.innerWidth;
         }
     },
     mounted() {
         this.fetchExpenses();
         this.fetchTotalExpensesByCategory();
-    }
+        window.addEventListener("resize", this.updateWindowWidth);
+    },
+    beforeUnmount() {
+        window.removeEventListener("resize", this.updateWindowWidth);
+    },
 });
 
 inputForm.mount("#inputForm");

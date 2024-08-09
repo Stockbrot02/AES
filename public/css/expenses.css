@@ -3,3 +3,8 @@
 #inputForm textarea {
     border: 1px solid black;
 }
+
+
+#expenseDescription:hover{
+    cursor: pointer
+}

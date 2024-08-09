@@ -1,11 +1,11 @@
 <?php
-// Datenbankverbindung herstellen
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "expanses";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+require 'config.php';
+
+$config = new config();
+
+$conn = new mysqli($config->getHost(), $config->getUsername(), $config->getPassword(), $config->getDatabase());
+
 
 if ($conn->connect_error) {
     die("Verbindung fehlgeschlagen: " . $conn->connect_error);
@@ -24,5 +24,7 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 
+// inform client that the content is in JSON format
 header('Content-Type: application/json');
+// converting array into JSON
 echo json_encode($expenses);

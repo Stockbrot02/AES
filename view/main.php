@@ -17,7 +17,7 @@ $_userid = $_SESSION["UserID"];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../public/css/style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
 </head>
 
@@ -73,20 +73,25 @@ $_userid = $_SESSION["UserID"];
                 <label for="" class="form-label">Kategorie</label>
                 <select name="" id="" required class="form-select" v-model="inputCategory">
                     <option value="Auto">Auto</option>
-                    <option value="Tanken">Tanken</option>
-                    <option value="Essensbestellungen">Essensbestellungen</option>
                     <option value="Einkaufen">Einkaufen</option>
+                    <option value="Essensbestellungen">Essensbestellungen</option>
                     <option value="Feiern">Feiern</option>
-                    <option value="Shoppen">Shoppen</option>
-                    <option value="Onlinebestellungen">Onlinebestellungen</option>
                     <option value="Fitness">Fitness</option>
+                    <option value="Fußball">Fußball</option>
                     <option value="Handy">Handy</option>
+                    <option value="Onlinebestellungen">Onlinebestellungen</option>
+                    <option value="Shoppen">Shoppen</option>
+                    <option value="Tanken">Tanken</option>
                 </select>
                 <label for="" class="form-label">Beschreibung</label>
                 <textarea name="" id="" class="form-control" v-model="inputDescription"></textarea>
                 <label for="" class="form-label">Datum</label>
                 <input type="date" class="form-control" v-model="inputDate" v-on:focus="openDatepicker">
-                <button type="submit" class="my-3">Hinzufügen</button>
+                <div class="my-2" style="background-color: grey; width: 200px; display: flex">
+                    <span class="material-symbols-outlined">
+                        add</span>
+                    <button type="submit" >Hinzufügen</button>
+                </div>
             </form>
             <!-- Expense Input Form -->
 
@@ -101,7 +106,7 @@ $_userid = $_SESSION["UserID"];
                 <tbody>
                     <tr v-for="(totalExpense, index) in totalValueByCategory" :key="index">
                         <td>{{totalExpense.Kategorie}}</td>
-                        <td>{{totalExpense.Summe}}</td>
+                        <td>{{formatValue(totalExpense.Summe)}} €</td>
                     </tr>
                 </tbody>
             </table>
@@ -116,12 +121,15 @@ $_userid = $_SESSION["UserID"];
                     <th>#</th>
                 </thead>
                 <tbody>
-                    <tr v-for="(expense, index) in expenseList" :key="index">
-                        <td>{{ formatValue(expense.Value)}}</td>
-                        <td>{{expense.Category}}</td>
-                        <td>{{expense.CreateDate}}</td>
-                        <td>{{expense.Description}}</td>
-                        <td>{{expense.UserID}}</td>
+                    <tr v-for="(expense, index) in paginatedExpenses" :key="index">
+                        <td>{{ formatValue(expense.Value) }}</td>
+                        <td>{{ expense.Category }}</td>
+                        <td>{{ expense.CreateDate }}</td>
+                        <!-- <td>{{ truncateDescription(expense.Description, 30) }}</td> -->
+                        <td id="expenseDescription" v-on:click="showFullDescription(expense.Description)">
+                            {{truncateDescription(expense.Description, 30)}}
+                        </td>
+                        <td>{{ expense.UserID }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -140,7 +148,6 @@ $_userid = $_SESSION["UserID"];
                     </div>
                 </li>
             </ul> -->
-
 
             <!-- Modal to delete expense -->
             <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -198,6 +205,26 @@ $_userid = $_SESSION["UserID"];
                 </div>
             </div>
             <!-- Modal to edit expense -->
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                        <a class="page-link" href="#" aria-label="Previous" v-on:click.prevent="prevPage">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" v-for="page in totalPages" :key="page" :class="{ active: currentPage === page }">
+                        <a class="page-link" href="#" v-on:click.prevent="goToPage(page)">{{ page }}</a>
+                    </li>
+                    <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                        <a class="page-link" href="#" aria-label="Next" v-on:click.prevent="nextPage">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- Pagination -->
         </div>
     </div>
 
