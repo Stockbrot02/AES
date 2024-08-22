@@ -1,0 +1,79 @@
+
+:root{
+    --navbarBGColor: rgb(243, 243, 243);
+    --linkFontColor: black;
+    --linkActivatedNavbarColor: #FFA500;
+    --logoutButtonColor: #FFA500;
+}
+
+body{
+    /* font-family: 'Arial', serif; */
+}
+
+
+#header,
+#navigationbar {
+    background-color: var(--navbarBGColor) !important;
+}
+
+#logoutIcon {
+    margin-right: 3px;
+    vertical-align: middle;
+}
+
+#activatedNavbarItem {
+    background-color: transparent;
+    /* font-size: 20px; */
+    text-decoration: underline;
+    color: var(--linkActivatedNavbarColor) !important;
+}
+
+#navigationbar a {
+    color: var(--linkFontColor)
+}
+
+header li a:hover {
+    color: #FFA500 !important;
+    font-size: 20px;
+    text-decoration: underline !important;
+}
+
+header a {
+    text-decoration: none;
+    color: white
+}
+
+header a:hover{
+    color: #FFA500
+}
+
+.navbar {
+    box-shadow: 0px 7px 8px -1px rgba(115, 106, 150, 0.77);
+    -webkit-box-shadow: 0px 7px 8px -1px rgba(115, 106, 150, 0.77);
+    -moz-box-shadow: 0px 7px 8px -1px rgba(115, 106, 150, 0.77);
+}
+
+.logout-btn {
+    align-items: center;
+    background-color: var(--logoutButtonColor) !important;
+    color: white;
+    border-color: transparent;
+}
+
+#txtAreaInputDescription{
+    border: 5px solid black !important;
+}
+
+/* Arrange navbar in burger menu */
+@media (max-width: 991px) {
+    .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+    }
+    .nav-item {
+        width: 100%;
+    }
+}
+.navbar-nav .nav-item {
+    margin-bottom: 0.5rem; /* Add some spacing between items */
+}

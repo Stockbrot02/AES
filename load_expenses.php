@@ -1,5 +1,9 @@
 <?php
 
+//Load expenses based on UserID
+session_start();
+$_userid = $_SESSION["UserID"];
+
 require 'config.php';
 
 $config = new config();
@@ -11,7 +15,7 @@ if ($conn->connect_error) {
     die("Verbindung fehlgeschlagen: " . $conn->connect_error);
 }
 
-$sql = "SELECT Value, Category, Date, CreateDate, UserID, Description FROM expanses";
+$sql = "SELECT Value, Category, Date, CreateDate, UserID, Description FROM expanses WHERE UserID = $_userid";
 $result = $conn->query($sql);
 
 $expenses = array();

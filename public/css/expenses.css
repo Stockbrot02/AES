@@ -5,6 +5,9 @@
 }
 
 
-#expenseDescription:hover{
-    cursor: pointer
+@media (max-width: 768px) {
+    #expenseDescription:hover {
+        cursor: pointer
+    }
+
 }
